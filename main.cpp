@@ -10,35 +10,24 @@ void setup() {
   pinMode(lightPin, OUTPUT);
 }
 
-void blinkLights() {
-  // Blink the lights
-    digitalWrite(lightPin, HIGH); // Turn on
-    delay(500);                  // Wait for 0.5 sec
-    digitalWrite(lightPin, LOW);  // Turn off
-    delay(500);                  // Wait for 0.5 sec
-    digitalWrite(lightPin, HIGH); // Turn on
-}
-
 // Global variables to keep track of the state and time
-bool isBlinking = false;
 unsigned long lastBlinkTime = 0;
 const unsigned long blinkInterval = 500; // Blink every 500 ms
+bool isBlinking = false;
 
 void loop() {
     int switchState = digitalRead(switchPin);
-    if (switchState == LOW) {
-        digitalWrite(lightPin, LOW);
-        isBlinking = false; // Stop blinking
-        return;
+    int blinkSwitchState = digitalRead(blinkSwitchPin);
+
+    if (switchState == HIGH) {
+        digitalWrite(lightPin, HIGH);
+        isBlinking = false;
     }
 
-    int blinkSwitchState = digitalRead(blinkSwitchPin);
-    if (blinkSwitchState == HIGH) {
-        isBlinking = true; // Start blinking
-    } 
-    else {
-        isBlinking = false; // Stop blinking
+    if (switchState == HIGH && blinkSwitchState == HIGH) {
+        isBlinking = true;
     }
+
     if (isBlinking) {
         unsigned long currentMillis = millis();
         if (currentMillis - lastBlinkTime >= blinkInterval) {
@@ -52,7 +41,7 @@ void loop() {
             digitalWrite(lightPin, lightState == HIGH ? LOW : HIGH);
         }
     } 
-    else {
-        digitalWrite(lightPin, HIGH); // Keep the light on
+        else {
+        digitalWrite(lightPin, LOW);
     }
 }
